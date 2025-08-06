@@ -1,0 +1,10 @@
+node_modules/
+*.log
+npm-debug.log*
+.DS_Store
+
+# backend data volume
+backend/data/
+
+# Python caches etc
+__pycache__/
