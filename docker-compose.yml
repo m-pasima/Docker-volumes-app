@@ -10,7 +10,7 @@ services:
   frontend:
     build: ./frontend
     volumes:
-      - frontend_content:/usr/share/nginx/html:ro
+      - frontend_content:/usr/share/nginx/html
     ports:
       - "8080:80"
     depends_on:
@@ -18,9 +18,4 @@ services:
 
 volumes:
   contact_data:
-  frontend_content:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/frontend/public
+  frontend_content:  # Docker-managed volume, no driver_opts needed
