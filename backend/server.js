@@ -36,6 +36,21 @@ app.post('/api/contact', (req, res) => {
   });
 });
 
+// Return all stored contacts
+app.get('/api/contacts', (req, res) => {
+  fs.readFile(DATA_FILE, 'utf8', (err, data) => {
+    if (err) {
+      return res.json([]);
+    }
+    try {
+      const contacts = JSON.parse(data);
+      res.json(contacts);
+    } catch (e) {
+      res.json([]);
+    }
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Backend listening on port ${PORT}`);
