@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech Consultancy</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script defer src="js/app.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <header class="bg-blue-600 text-white p-8 text-center">
+    <h1 class="text-3xl font-bold">Acme Digital Consulting</h1>
+    <p class="mt-2">Transforming businesses with technology</p>
+  </header>
+
+  <section class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white shadow-md p-4 rounded">
+      <h2 class="text-xl font-semibold mb-2">Cloud Migration</h2>
+      <p>Seamlessly move your infrastructure to the cloud.</p>
+    </div>
+    <div class="bg-white shadow-md p-4 rounded">
+      <h2 class="text-xl font-semibold mb-2">DevOps</h2>
+      <p>Automate delivery pipelines for faster releases.</p>
+    </div>
+    <div class="bg-white shadow-md p-4 rounded">
+      <h2 class="text-xl font-semibold mb-2">AI Integration</h2>
+      <p>Infuse intelligence into your products.</p>
+    </div>
+  </section>
+
+  <section class="bg-white p-8 text-center">
+    <img src="https://source.unsplash.com/featured/?technology" alt="Technology" class="mx-auto mb-4 rounded">
+    <h2 class="text-2xl font-bold mb-4">Ready to Elevate Your Business?</h2>
+    <p class="mb-4">Contact us today and let's build the future together.</p>
+  </section>
+
+  <section class="p-8 bg-gray-100">
+    <h2 class="text-2xl mb-4 font-bold text-center">Contact Us</h2>
+    <form id="contact-form" class="max-w-xl mx-auto">
+      <div class="mb-4">
+        <label class="block mb-1" for="name">Name</label>
+        <input class="w-full border p-2" type="text" id="name" required />
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1" for="email">Email</label>
+        <input class="w-full border p-2" type="email" id="email" required />
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1" for="message">Message</label>
+        <textarea class="w-full border p-2" id="message" required></textarea>
+      </div>
+      <button class="bg-blue-600 text-white px-4 py-2" type="submit">Send</button>
+      <p id="status" class="mt-4 text-center"></p>
+    </form>
+  </section>
+
+  <footer class="text-center p-4 text-sm text-gray-600">
+    &copy; 2024 Acme Digital Consulting
+  </footer>
+</body>
+</html>
