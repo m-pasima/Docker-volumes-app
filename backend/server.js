@@ -9,6 +9,9 @@ const DATA_FILE = '/data/contacts.json';
 app.use(cors());
 app.use(express.json());
 
+// Simple liveness endpoint (200 OK)
+app.get('/healthz', (_req, res) => res.status(200).json({ ok: true }));
+
 app.post('/api/contact', (req, res) => {
   const { name, email, message } = req.body;
   if (!name || !email || !message) {
@@ -18,40 +21,24 @@ app.post('/api/contact', (req, res) => {
   fs.readFile(DATA_FILE, 'utf8', (err, data) => {
     let contacts = [];
     if (!err && data) {
-      try {
-        contacts = JSON.parse(data);
-      } catch (e) {
-        contacts = [];
-      }
+      try { contacts = JSON.parse(data); } catch { contacts = []; }
     }
     contacts.push({ name, email, message, timestamp: new Date().toISOString() });
 
     fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-    fs.writeFile(DATA_FILE, JSON.stringify(contacts, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to save data' });
-      }
+    fs.writeFile(DATA_FILE, JSON.stringify(contacts, null, 2), (err2) => {
+      if (err2) return res.status(500).json({ error: 'Failed to save data' });
       res.json({ status: 'ok' });
     });
   });
 });
 
-// Return all stored contacts
-app.get('/api/contacts', (req, res) => {
+app.get('/api/contacts', (_req, res) => {
   fs.readFile(DATA_FILE, 'utf8', (err, data) => {
-    if (err) {
-      return res.json([]);
-    }
-    try {
-      const contacts = JSON.parse(data);
-      res.json(contacts);
-    } catch (e) {
-      res.json([]);
-    }
+    if (err) return res.json([]);
+    try { res.json(JSON.parse(data)); } catch { res.json([]); }
   });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Backend listening on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Backend listening on port ${PORT}`));
