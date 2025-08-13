@@ -1,21 +1,44 @@
-version: '3.8'
+version: "3.8"
+
+networks:
+  app-net:
+    driver: overlay
+    attachable: true
+
+volumes:
+  contact_data: {}
+  frontend_content: {}
+
 services:
   backend:
-    image: volumebackend:latest
+    image: ivykiera/docker-volumes-backend-app:1.0
     ports:
       - "3000:3000"
+    networks:
+      - app-net
     volumes:
       - contact_data:/data
     deploy:
       replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.storage == db
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost:3000/health || exit 1"]
+
   frontend:
-    image: volumefrontend:latest
+    image: ivykiera/docker-frontend-volumes-app:1.0   
     ports:
       - "8080:80"
+    networks:
+      - app-net
     volumes:
       - frontend_content:/usr/share/nginx/html
     deploy:
       replicas: 1
-volumes:
-  contact_data:
-  frontend_content:
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost/ || exit 1"]
