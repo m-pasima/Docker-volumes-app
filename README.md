@@ -19,6 +19,9 @@ This sample project demonstrates Docker named volumes and Kubernetes persistent 
    ```
    The file `contacts.json` is stored inside this volume.
 
+## Docker Swarm Usage
+For step-by-step instructions on deploying this project with Docker Swarm on an EC2 instance, see the [students guide](students-guide.md).
+
 ## Kubernetes Usage
 1. Build images:
    ```sh

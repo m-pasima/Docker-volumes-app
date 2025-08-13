@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  backend:
+    image: volumebackend:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - contact_data:/data
+    deploy:
+      replicas: 1
+  frontend:
+    image: volumefrontend:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - frontend_content:/usr/share/nginx/html
+    deploy:
+      replicas: 1
+volumes:
+  contact_data:
+  frontend_content:
