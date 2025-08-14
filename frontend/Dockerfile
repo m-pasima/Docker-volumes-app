@@ -8,6 +8,10 @@ COPY public /usr/share/nginx/html
 
 EXPOSE 80
 
-# (Optional) HEALTHCHECK via HTTP
+# Optional: basic HTTP healthcheck
 HEALTHCHECK --interval=20s --timeout=5s --retries=10 --start-period=40s \
   CMD sh -lc "wget -q -O- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"
+
+# Keep the container running
+CMD ["nginx", "-g", "daemon off;"]
+

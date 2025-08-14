@@ -5,40 +5,58 @@ networks:
     driver: overlay
     attachable: true
 
-volumes:
-  contact_data: {}
-  frontend_content: {}
-
 services:
   backend:
-    image: ivykiera/docker-volumes-backend-app:1.0
+    image: ivykiera/docker-volumes-backend-app:v1
     ports:
       - "3000:3000"
     networks:
       - app-net
     volumes:
-      - contact_data:/data
+      - backend-data:/data
     deploy:
       replicas: 1
-      restart_policy:
-        condition: on-failure
+      restart_policy: { condition: on-failure }
       placement:
         constraints:
-          - node.labels.storage == db
+          - node.role == worker
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O- http://localhost:3000/health || exit 1"]
+      test: ["CMD-SHELL", "apk add --no-cache busybox-extras >/dev/null 2>&1 || true; nc -z 127.0.0.1 3000 || exit 1"]
+      interval: 20s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
 
   frontend:
-    image: ivykiera/docker-frontend-volumes-app:1.0   
+    image: ivykiera/docker-frontend-volumes-app:v5   # <— build & push this tag
     ports:
       - "8080:80"
     networks:
       - app-net
-    volumes:
-      - frontend_content:/usr/share/nginx/html
+    # Optional: gate start until DNS and port are ready (extra safety)
+    command: >
+      sh -lc '
+      apk add --no-cache bind-tools busybox-extras >/dev/null 2>&1 || true;
+      echo "Waiting for backend DNS...";
+      until nslookup backend 127.0.0.11 >/dev/null 2>&1; do echo "dns not ready"; sleep 2; done;
+      echo "Waiting for backend:3000...";
+      until nc -z backend 3000; do echo "tcp not ready"; sleep 2; done;
+      echo "Starting nginx";
+      exec nginx -g "daemon off;";
+      '
     deploy:
       replicas: 1
-      restart_policy:
-        condition: on-failure
+      restart_policy: { condition: on-failure }
+      placement:
+        constraints:
+          - node.role == worker
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O- http://localhost/ || exit 1"]
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+volumes:
+  backend-data:
+
